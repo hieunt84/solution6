@@ -1,4 +1,5 @@
-https://blog.cloud365.vn/linux/pacemaker-haproxy-galera/
+TOPOLOYG1
+<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.PNG" /></p>
 
 CÁC BƯỚC TRIỂN KHAI
 Step 1: Install Loadbalancer
@@ -22,8 +23,12 @@ Production Environment
 Cloud
 On-primies
 
-# check sync galera cluster
+REF:
+https://blog.cloud365.vn/linux/pacemaker-haproxy-galera/
 
-<p align="center"><img src="https://raw.githubusercontent.com/geerlingguy/raspberry-pi-dramble/master/images/raspberry-pi-dramble-hero-2019.jpg" alt="Raspberry Pi Dramble - Hero Image" /></p>
+NOTES:
+check sync galera cluster
 
-<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.PNG" /></p>
+
+
+
