@@ -26,4 +26,4 @@ On-primies
 
 <p align="center"><img src="https://raw.githubusercontent.com/geerlingguy/raspberry-pi-dramble/master/images/raspberry-pi-dramble-hero-2019.jpg" alt="Raspberry Pi Dramble - Hero Image" /></p>
 
-<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.PNG" alt="Raspberry Pi Dramble - Hero Image"/></p>
+<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.PNG" /></p>
