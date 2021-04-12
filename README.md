@@ -23,3 +23,5 @@ Cloud
 On-primies
 
 # check sync galera cluster
+
+<p align="center"><img src="https://raw.githubusercontent.com/geerlingguy/raspberry-pi-dramble/master/images/raspberry-pi-dramble-hero-2019.jpg" alt="Raspberry Pi Dramble - Hero Image" /></p>
