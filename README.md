@@ -1,5 +1,8 @@
 ## TOPOLOYG1
-<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.PNG" /></p>
+<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.png" /></p>
+
+## TOPOLOYG2
+<p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology2.png" /></p>
 
 ## CÁC BƯỚC TRIỂN KHAI
 - Step 1: Install Loadbalancer
