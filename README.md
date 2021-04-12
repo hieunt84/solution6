@@ -1,10 +1,10 @@
-## TOPOLOYG1
+## Topology 1
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.png" /></p>
 
-## TOPOLOYG2
+## Topology 1
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology2.png" /></p>
 
-## DEPOLY STEPS
+## Deploy Steps
 - Step 1: Install Loadbalancer
 - Step 2: Install Web1
 - Step 3: Install Web2
@@ -13,7 +13,7 @@
 - Step 6: Install db1
 - Step 7: Manual
 
-## INFOMATION
+## Information
 - acc hacluster/eve@123
 - acc admin wp: admin/eve@123
 - acc root_db: root/eve@123
@@ -29,7 +29,7 @@
 ## REF:
 - https://blog.cloud365.vn/linux/pacemaker-haproxy-galera/
 
-## NOTES:
+## Notes:
 - check sync galera cluster
 
 
