@@ -1,10 +1,10 @@
-## Topology 1
+## Topology 1:
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.png" /></p>
 
-## Topology 2
+## Topology 2:
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology2.png" /></p>
 
-## Deploy Steps
+## Deploy Steps:
 - Step 1: Install Loadbalancer
 - Step 2: Install Web1
 - Step 3: Install Web2
@@ -13,16 +13,16 @@
 - Step 6: Install db1
 - Step 7: Manual
 
-## Information
+## Information:
 - acc hacluster/eve@123
 - acc admin wp: admin/eve@123
 - acc root_db: root/eve@123
 - acc root system : root/eve@123
 
-## Development Environment
+## Development Environment:
 - EVE-NG
 
-## Production Environment
+## Production Environment:
 - Cloud
 - On-primies
 
