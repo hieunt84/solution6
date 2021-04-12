@@ -4,7 +4,7 @@
 ## TOPOLOYG2
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology2.png" /></p>
 
-## CÁC BƯỚC TRIỂN KHAI
+## DEPOLY STEPS
 - Step 1: Install Loadbalancer
 - Step 2: Install Web1
 - Step 3: Install Web2
@@ -13,7 +13,7 @@
 - Step 6: Install db1
 - Step 7: Manual
 
-## INFO
+## INFOMATION
 - acc hacluster/eve@123
 - acc admin wp: admin/eve@123
 - acc root_db: root/eve@123
