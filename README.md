@@ -1,7 +1,7 @@
 ## Topology 1
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology1.png" /></p>
 
-## Topology 1
+## Topology 2
 <p align="center"><img src="https://github.com/hieunt84/solution6/blob/master/images/topology2.png" /></p>
 
 ## Deploy Steps
