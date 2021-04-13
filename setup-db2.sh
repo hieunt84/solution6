@@ -195,5 +195,3 @@ SETUP COMPLETE
 password_root_database: ${db_root_password}
 END
 chmod 600 /root/info.txt
-echo ~~ CHANGE IP ~~
-nmcli con up eth0
