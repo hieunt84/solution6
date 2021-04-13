@@ -66,6 +66,3 @@ I use [git-worktree(1)](https://git-scm.com/docs/git-worktree) to include the te
 
 The Wordpress site should be visible on e.g. <http://192.168.56.4/wordpress/> for the CentOS 7.2 box, and <http://192.168.56.5/wordpress/> for the Fedora 25 box.
 
-
-
-

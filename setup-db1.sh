@@ -189,8 +189,10 @@ echo ~~CONFIG SYSTEMS COMPLETE~~
 
 # start galera cluster
 galera_new_cluster
+
 # enable Mariadb
 systemctl enable mariadb
+
 # check status galera cluster
 mysql -u root -e "SHOW STATUS LIKE 'wsrep_cluster_size'"
 
