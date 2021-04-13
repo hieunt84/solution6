@@ -260,7 +260,7 @@ pcs cluster start --all
 # Cho phép cluster khởi động cùng OS
 pcs cluster enable --all
 
-# Bước 3: Thiết lập Cluster
+# Thiết lập Cluster
 # Bỏ qua cơ chế STONITH
 pcs property set stonith-enabled=false
 
