@@ -48,9 +48,8 @@ yum -y update
 # Cài đặt Mariadb
 yum install -y mariadb mariadb-server
 
-echo ~~MariaDB Installation Complete~~
-echo "------------------------------------"
-sleep 1
+# enable Mariadb
+systemctl enable mariadb
 
 ##############################################
 # Cài đặt galera và gói hỗ trợ
@@ -89,7 +88,7 @@ bind-address=10.1.1.100
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100"
+wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -158,8 +157,8 @@ listen galera
     timeout server 28801s
     option mysql-check user haproxy
     server node1 10.1.1.99:3306 check inter 5s fastinter 2s rise 3 fall 3
-    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
-    
+    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup
+    server node3 10.1.1.101:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
 # Cấu hình log HAProxy
 sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/g" /etc/rsyslog.conf
 sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/g" /etc/rsyslog.conf
@@ -191,6 +190,5 @@ systemctl stop mariadb
 #Save info
 cat >> "/root/info.txt" <<END
 SETUP COMPLETE
-password_root_database: ${db_root_password}
 END
 chmod 600 /root/info.txt

@@ -36,6 +36,18 @@ Vagrant.configure("2") do |config|
     node.vm.provision "shell", path: "setup-db2.sh"
   end
 
+  # make vm node3-db3
+  config.vm.define "node3" do |node|
+    node.vm.box = "centos/7"
+    node.vm.box_check_update = false
+    node.vm.provider "virtualbox" do |vb|                           
+      vb.cpus = 1                               
+      vb.memory = 1024                           
+    end                 
+    node.vm.network "private_network", ip: "10.1.1.101"
+    node.vm.provision "shell", path: "setup-db3.sh"
+  end
+
   # make vm node1-db1
   config.vm.define "node1" do |node|
     node.vm.box = "centos/7"

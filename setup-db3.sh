@@ -55,9 +55,8 @@ yum -y update
 # Cài đặt Mariadb
 yum install -y mariadb mariadb-server
 
-echo ~~MariaDB Installation Complete~~
-echo "------------------------------------"
-sleep 1
+# enable Mariadb
+systemctl enable mariadb
 
 ##############################################
 # Cài đặt galera và gói hỗ trợ
@@ -199,9 +198,5 @@ systemctl stop mariadb
 #Save info
 cat >> "/root/info.txt" <<END
 SETUP COMPLETE
-password_root_database: ${db_root_password}
 END
 chmod 600 /root/info.txt
-
-echo ~~ CHANGE IP ~~
-nmcli con up eth0
