@@ -166,9 +166,8 @@ listen galera
     timeout server 28801s
     option mysql-check user haproxy
     server node1 10.1.1.99:3306 check inter 5s fastinter 2s rise 3 fall 3
-    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup
-    server node3 10.1.1.101:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
-
+    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
+    
 # Cấu hình log HAProxy
 sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/g" /etc/rsyslog.conf
 sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/g" /etc/rsyslog.conf

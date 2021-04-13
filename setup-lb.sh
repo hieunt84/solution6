@@ -4,7 +4,8 @@
 # SECTION 1: PREPARE
 
 # update system
-yum -y update
+sudo -i
+# yum -y update
 
 # config hostname
 hostnamectl set-hostname srv-lb
