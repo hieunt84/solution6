@@ -4,18 +4,11 @@
 # SECTION 1: PREPARE
 
 # update system
+sudo -i
 yum -y update
 
 # config hostname
 hostnamectl set-hostname node1
-
-# config network
-echo "Setup IP eth0"
-nmcli c modify eth0 ipv4.addresses 10.1.1.99/24
-nmcli c modify eth0 ipv4.gateway 10.1.1.2
-nmcli c modify eth0 ipv4.dns 8.8.8.8
-nmcli c modify eth0 ipv4.method manual
-nmcli con mod eth0 connection.autoconnect yes
 
 # config timezone
 timedatectl set-timezone Asia/Ho_Chi_Minh
@@ -104,7 +97,7 @@ bind-address=10.1.1.99
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
+wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -173,8 +166,7 @@ listen galera
     timeout server 28801s
     option mysql-check user haproxy
     server node1 10.1.1.99:3306 check inter 5s fastinter 2s rise 3 fall 3
-    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup
-    server node3 10.1.1.101:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
+    server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
 
 # Cấu hình log HAProxy
 sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/g" /etc/rsyslog.conf
@@ -239,19 +231,16 @@ _EOF_
 #########################################################################################
 # SECTION 5: CONFIG pacemaker corosync
 
-# Apply config network
-nmcli con up eth0
-
 # Tạo Cluster PCS
 # Thiết lập mật khẩu user hacluster
 echo eve@123 | passwd hacluster --stdin
 
 # Chứng thực cluster (Chỉ thực thiện trên cấu hình trên một node duy nhất,
 # trong bài sẽ thực hiện trên node1), nhập chính xác tài khoản user hacluster
-pcs cluster auth node1 node2 node3 -u hacluster -p eve@123
+pcs cluster auth node1 node2 -u hacluster -p eve@123
 
 # Khởi tạo cấu hình cluster ban đầu
-pcs cluster setup --name ha_cluster node1 node2 node3
+pcs cluster setup --name ha_cluster node1 node2
 sleep 2
 
 # Khởi động Cluster
