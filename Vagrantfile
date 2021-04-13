@@ -24,6 +24,18 @@ Vagrant.configure("2") do |config|
     node.vm.provision "shell", path: "setup-web1.sh"
   end
 
+  # make vm web2
+  config.vm.define "web2" do |node|
+    node.vm.box = "centos/7"
+    node.vm.box_check_update = false
+    node.vm.provider "virtualbox" do |vb|                           
+      vb.cpus = 1                               
+      vb.memory = 1024                           
+    end                 
+    node.vm.network "private_network", ip: "10.1.1.102"
+    node.vm.provision "shell", path: "setup-web2.sh"
+  end
+
   # make vm node2-db2
   config.vm.define "node2" do |node|
     node.vm.box = "centos/7"

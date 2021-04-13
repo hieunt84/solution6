@@ -59,8 +59,8 @@ yum install -y galera rsync
 
 ##############################################
 # Cài đặt HAproxy 1.8
-yum install curl socat -y
-curl -sO http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
+yum install wget socat -y
+wget -q http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
 yum install haproxy18-1.8.1-5.el7.x86_64.rpm -y
 
 ##############################################
