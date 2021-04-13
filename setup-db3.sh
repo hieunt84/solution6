@@ -9,14 +9,6 @@ yum -y update
 # config hostname
 hostnamectl set-hostname node3
 
-# config network
-echo "Setup IP eth0"
-nmcli c modify eth0 ipv4.addresses 10.1.1.101/24
-nmcli c modify eth0 ipv4.gateway 10.1.1.2
-nmcli c modify eth0 ipv4.dns 8.8.8.8
-nmcli c modify eth0 ipv4.method manual
-nmcli con mod eth0 connection.autoconnect yes
-
 # config timezone
 timedatectl set-timezone Asia/Ho_Chi_Minh
 
@@ -64,8 +56,8 @@ yum install -y galera rsync
 
 ##############################################
 # Cài đặt HAproxy 1.8
-yum install wget socat -y
-wget http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
+yum install curl socat -y
+curl -sO http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
 yum install haproxy18-1.8.1-5.el7.x86_64.rpm -y
 
 ##############################################
