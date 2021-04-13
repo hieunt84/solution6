@@ -89,7 +89,7 @@ bind-address=10.1.1.100
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
+wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -185,7 +185,6 @@ echo ~~CONFIG SYSTEMS COMPLETE~~
 # Config MariaDB
 # Tắt Mariadb
 systemctl stop mariadb
-
 
 #########################################################################################
 # SECTION 6: FINISHED
