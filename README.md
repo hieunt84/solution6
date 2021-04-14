@@ -17,6 +17,6 @@ I use [git-worktree(1)](https://git-scm.com/docs/git-worktree) to include the te
 
 The Wordpress site should be visible on e.g. <http://happyit.local/> for the CentOS 7.8 box(centos/7).
 
-## Note Release
+## Releases:
 V1.1.0: Update topology
 - Add subnet for replication network galera cluster.
