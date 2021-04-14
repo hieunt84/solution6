@@ -30,8 +30,6 @@
 ## REF:
 - https://blog.cloud365.vn/linux/pacemaker-haproxy-galera/
 
-## Notes:
-- check sync galera cluster
 
 
 
