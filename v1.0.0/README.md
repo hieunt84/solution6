@@ -1,4 +1,4 @@
-# Vagrant test environment
+## Vagrant test environment
 
 This branch contains a test environment for solution6, powered by Vagrant.
 

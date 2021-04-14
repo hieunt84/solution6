@@ -1,4 +1,4 @@
-# Vagrant test environment
+## Vagrant test environment
 
 This branch contains a test environment for solution6, powered by Vagrant.
 
@@ -17,3 +17,6 @@ I use [git-worktree(1)](https://git-scm.com/docs/git-worktree) to include the te
 
 The Wordpress site should be visible on e.g. <http://happyit.local/> for the CentOS 7.8 box(centos/7).
 
+## Note Release
+V1.1.0: Update topology
+- Add subnet for replication network galera cluster.

@@ -8,7 +8,7 @@ sudo -i
 yum -y update
 
 # config hostname
-hostnamectl set-hostname node3
+hostnamectl set-hostname node2
 
 # config timezone
 timedatectl set-timezone Asia/Ho_Chi_Minh
@@ -77,30 +77,30 @@ echo ~~INSTALL MARIADB AND DEPENDENCIES COMPLETE~~
 #########################################################################################
 # SECTION 3: CONFIG
 echo ~~CONFIG SYSTEMS~~
+
 # Cấu hình Galera Cluster
 cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf.bak
 
 echo '[server]
 [mysqld]
-bind-address=10.1.1.101
+bind-address=10.1.1.100
 
 [galera]
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-#wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
-wsrep_cluster_address="gcomm://10.1.2.99,10.1.2.100,10.1.2.101"
+wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 #Cluster name
 wsrep_cluster_name="portal_cluster"
 # Allow server to accept connections on all interfaces.
-bind-address=10.1.1.101
+bind-address=10.1.1.100
 # this server ip, change for each server
-wsrep_node_address="10.1.1.101"
+wsrep_node_address="10.1.1.100"
 # this server name, change for each server
-wsrep_node_name="node3"
+wsrep_node_name="node2"
 wsrep_sst_method=rsync
 [embedded]
 [mariadb]
@@ -160,7 +160,6 @@ listen galera
     server node1 10.1.1.99:3306 check inter 5s fastinter 2s rise 3 fall 3
     server node2 10.1.1.100:3306 check inter 5s fastinter 2s rise 3 fall 3 backup
     server node3 10.1.1.101:3306 check inter 5s fastinter 2s rise 3 fall 3 backup' > /etc/haproxy/haproxy.cfg
-
 # Cấu hình log HAProxy
 sed -i "s/#\$ModLoad imudp/\$ModLoad imudp/g" /etc/rsyslog.conf
 sed -i "s/#\$UDPServerRun 514/\$UDPServerRun 514/g" /etc/rsyslog.conf
@@ -183,7 +182,6 @@ echo ~~CONFIG SYSTEMS COMPLETE~~
 
 #########################################################################################
 # SECTION 5: CONFIG SECURE
-
 # Config MariaDB
 # Tắt Mariadb
 systemctl stop mariadb

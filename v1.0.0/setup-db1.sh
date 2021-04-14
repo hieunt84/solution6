@@ -8,14 +8,15 @@ sudo -i
 yum -y update
 
 # config hostname
-hostnamectl set-hostname node3
+hostnamectl set-hostname node1
 
 # config timezone
 timedatectl set-timezone Asia/Ho_Chi_Minh
 
 # disable SELINUX
-setenforce 0 
-sed -i 's/enforcing/disabled/g' /etc/selinux/config
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
 # disable firewall
 systemctl stop firewalld
@@ -49,8 +50,9 @@ yum -y update
 # Cài đặt Mariadb
 yum install -y mariadb mariadb-server
 
-# enable Mariadb
-systemctl enable mariadb
+echo ~~MariaDB Installation Complete~~
+echo "------------------------------------"
+sleep 1
 
 ##############################################
 # Cài đặt galera và gói hỗ trợ
@@ -77,30 +79,37 @@ echo ~~INSTALL MARIADB AND DEPENDENCIES COMPLETE~~
 #########################################################################################
 # SECTION 3: CONFIG
 echo ~~CONFIG SYSTEMS~~
-# Cấu hình Galera Cluster
-cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf.bak
 
+##############################################
+# Config MariaDB
+# Tắt Mariadb
+systemctl stop mariadb
+
+##############################################
+# Cấu hình Galera Cluster
+# Tạo bản backup cho cấu hình mặc định và chỉnh sửa cấu hình Galear Cluster
+cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf.bak
+# Cấu hình Galera Cluster
 echo '[server]
 [mysqld]
-bind-address=10.1.1.101
+bind-address=10.1.1.99
 
 [galera]
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-#wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
-wsrep_cluster_address="gcomm://10.1.2.99,10.1.2.100,10.1.2.101"
+wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 #Cluster name
 wsrep_cluster_name="portal_cluster"
 # Allow server to accept connections on all interfaces.
-bind-address=10.1.1.101
+bind-address=10.1.1.99
 # this server ip, change for each server
-wsrep_node_address="10.1.1.101"
+wsrep_node_address="10.1.1.99"
 # this server name, change for each server
-wsrep_node_name="node3"
+wsrep_node_name="node1"
 wsrep_sst_method=rsync
 [embedded]
 [mariadb]
@@ -176,17 +185,107 @@ echo 'net.ipv4.ip_nonlocal_bind = 1' >> /etc/sysctl.conf
 systemctl stop haproxy
 systemctl disable haproxy
 
+echo ~~CONFIG SYSTEMS COMPLETE~~
+#########################################################################################
+# SECTION 4: START GARELA CLUSTER
+
+# start galera cluster
+galera_new_cluster
+
+# enable Mariadb
+systemctl enable mariadb
+
+# check status galera cluster
+mysql -u root -e "SHOW STATUS LIKE 'wsrep_cluster_size'"
+
+##############################################
+# Tạo user haproxy, phục vụ plugin health check của HAProxy (option mysql-check user haproxy)
+mysql <<END 
+CREATE USER 'haproxy'@'node1';
+CREATE USER 'haproxy'@'node2';
+CREATE USER 'haproxy'@'node3';
+CREATE USER 'haproxy'@'%';
+END
+
+##############################################
+# Create database WordPress
+# Variables
+db_wp="db_wp"
+user_wp="user_wp"
+password_wp="password_wp"
+web_host="10.1.1.%"
+mysql <<END
+  CREATE DATABASE $db_wp;
+  CREATE USER '$user_wp'@'$web_host' IDENTIFIED BY '$password_wp';
+  GRANT ALL ON $db_wp.* TO '$user_wp'@'$web_host';
+END
+
+##############################################
+# mysql_secure_installation
+# not set passwor root db
+
+mysql --user=root <<_EOF_
+  DELETE FROM mysql.user WHERE User='';
+  DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+  DROP DATABASE IF EXISTS test;
+  DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+  FLUSH PRIVILEGES;
+_EOF_
+
+#########################################################################################
+# SECTION 5: CONFIG pacemaker corosync
+
+# Tạo Cluster PCS
 # Thiết lập mật khẩu user hacluster
 echo eve@123 | passwd hacluster --stdin
 
-echo ~~CONFIG SYSTEMS COMPLETE~~
+# Chứng thực cluster (Chỉ thực thiện trên cấu hình trên một node duy nhất,
+# trong bài sẽ thực hiện trên node1), nhập chính xác tài khoản user hacluster
+pcs cluster auth node1 node2 node3 -u hacluster -p eve@123
 
-#########################################################################################
-# SECTION 5: CONFIG SECURE
+# Khởi tạo cấu hình cluster ban đầu
+pcs cluster setup --name ha_cluster node1 node2 node3
+sleep 2
 
-# Config MariaDB
-# Tắt Mariadb
-systemctl stop mariadb
+# Khởi động Cluster
+pcs cluster start --all
+
+# Cho phép cluster khởi động cùng OS
+pcs cluster enable --all
+
+# Thiết lập Cluster
+# Bỏ qua cơ chế STONITH
+pcs property set stonith-enabled=false
+
+# Cho phép Cluster chạy kể cả khi mất quorum
+pcs property set no-quorum-policy=ignore
+
+# Hạn chế Resource trong cluster chuyển node sau khi Cluster khởi động lại
+pcs property set default-resource-stickiness="INFINITY"
+
+# Kiểm tra thiết lập cluster
+pcs property list
+
+# Tạo Resource IP VIP Cluster
+pcs resource create Virtual_IP ocf:heartbeat:IPaddr2 ip=10.1.1.98 cidr_netmask=24 op monitor interval=30s
+
+# Tạo Resource quản trị dịch vụ HAProxy
+pcs resource create Loadbalancer_HaProxy systemd:haproxy op monitor timeout="5s" interval="5s"
+
+# Ràng buộc thứ tự khởi động dịch vụ, khởi động dịch vụ Virtual_IP sau đó khởi động dịch vụ Loadbalancer_HaProxy
+pcs constraint order start Virtual_IP then Loadbalancer_HaProxy kind=Optional
+
+# Ràng buộc resource Virtual_IP phải khởi động cùng node với resource Loadbalancer_HaProxy
+pcs constraint colocation add Virtual_IP Loadbalancer_HaProxy INFINITY
+
+# Kiểm tra trạng thái Cluster
+pcs status
+
+# Kiểm tra cấu hình Resource
+pcs resource show --full
+
+# Kiểm tra ràng buộc trên resource
+pcs constraint
 
 #########################################################################################
 # SECTION 6: FINISHED
