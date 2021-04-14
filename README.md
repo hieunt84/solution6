@@ -19,8 +19,9 @@
 - acc root_db: root/eve@123
 - acc root system : root/eve@123
 
-## Development Environment:
+## Development/Testing Environment:
 - EVE-NG
+- Vagrant
 
 ## Production Environment:
 - Cloud
