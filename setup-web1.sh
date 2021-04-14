@@ -3,12 +3,6 @@
 ##########################################################################################
 # SECTION 1: PREPARE
 
-# update system
-yum -y update
-
-# config hostname
-hostnamectl set-hostname web1
-
 # config network
 echo "Setup IP eth0"
 nmcli c modify eth0 ipv4.addresses 10.1.1.102/24
@@ -17,19 +11,9 @@ nmcli c modify eth0 ipv4.dns 8.8.8.8
 nmcli c modify eth0 ipv4.method manual
 nmcli con mod eth0 connection.autoconnect yes
 
-# config timezone
-timedatectl set-timezone Asia/Ho_Chi_Minh
-
-# disable SELINUX
-setenforce 0 
-sed -i 's/enforcing/disabled/g' /etc/selinux/config
-
-# disable firewall
-systemctl stop firewalld
-systemctl disable firewalld
-
 # config file hosts
 cat >> "/etc/hosts" <<END
+10.1.1.98 vip
 10.1.1.99 node1
 10.1.1.100 node2
 10.1.1.101 node3
@@ -37,6 +21,24 @@ cat >> "/etc/hosts" <<END
 10.1.1.103 web2
 10.1.1.105 lb
 END
+
+# update system
+# yum -y update
+
+# config hostname
+hostnamectl set-hostname web1
+
+# config timezone
+timedatectl set-timezone Asia/Ho_Chi_Minh
+
+# disable SELINUX
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+
+# disable firewall
+systemctl stop firewalld
+systemctl disable firewalld
 
 ##########################################################################################
 # SECTION 2: INSTALL LAMP AND DEPENDENCIES

@@ -11,7 +11,7 @@
 - Step 4: Install db2
 - Step 5: Install db3
 - Step 6: Install db1
-- Step 7: Manual
+- Step 7: start-cluster-galera.sh
 
 ## Information:
 - acc hacluster/eve@123

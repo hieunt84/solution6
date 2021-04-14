@@ -3,19 +3,38 @@
 ##########################################################################################
 # SECTION 1: PREPARE
 
-# update system
-yum -y update
-
-# config hostname
-hostnamectl set-hostname node1
-
-# config network
+# config network management
 echo "Setup IP eth0"
 nmcli c modify eth0 ipv4.addresses 10.1.1.99/24
 nmcli c modify eth0 ipv4.gateway 10.1.1.2
 nmcli c modify eth0 ipv4.dns 8.8.8.8
 nmcli c modify eth0 ipv4.method manual
 nmcli con mod eth0 connection.autoconnect yes
+
+# subnet for replicate cluster
+echo "Setup IP eth1"
+nmcli c modify eth1 ipv4.addresses 10.1.2.99/24
+nmcli c modify eth1 ipv4.gateway 10.1.2.2
+nmcli c modify eth1 ipv4.dns 8.8.8.8
+nmcli c modify eth1 ipv4.method manual
+nmcli con mod eth1 connection.autoconnect yes
+
+# config file hosts
+cat >> "/etc/hosts" <<END
+10.1.1.98 vip
+10.1.1.99 node1
+10.1.1.100 node2
+10.1.1.101 node3
+10.1.1.102 web1
+10.1.1.103 web2
+10.1.1.105 lb
+END
+
+# update system
+# yum -y update
+
+# config hostname
+hostnamectl set-hostname node1
 
 # config timezone
 timedatectl set-timezone Asia/Ho_Chi_Minh
@@ -29,15 +48,6 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 systemctl stop firewalld
 systemctl disable firewalld
 
-# config file hosts
-cat >> "/etc/hosts" <<END
-10.1.1.99 node1
-10.1.1.100 node2
-10.1.1.101 node3
-10.1.1.102 web1
-10.1.1.103 web2
-10.1.1.105 lb
-END
 
 ##########################################################################################
 # SECTION 2: INSTALL MARIADB AND DEPENDENCIES
@@ -45,20 +55,19 @@ END
 echo ~~INSTALL MARIADB AND DEPENDENCIES~~
 ##############################################
 # Install MariaDB
+
 # Khai báo repo
 echo '[mariadb]
 name = MariaDB
 baseurl = http://yum.mariadb.org/10.2/centos7-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1' >> /etc/yum.repos.d/MariaDB.repo
+
+# update system
 yum -y update
 
 # Cài đặt Mariadb
 yum install -y mariadb mariadb-server
-
-echo ~~MariaDB Installation Complete~~
-echo "------------------------------------"
-sleep 1
 
 ##############################################
 # Cài đặt galera và gói hỗ trợ
@@ -104,7 +113,7 @@ bind-address=10.1.1.99
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
-wsrep_cluster_address="gcomm://10.1.1.99,10.1.1.100,10.1.1.101"
+wsrep_cluster_address="gcomm://10.1.2.99,10.1.2.100,10.1.2.101"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -195,6 +204,7 @@ echo ~~CONFIG SYSTEMS COMPLETE~~
 #########################################################################################
 # SECTION 4: START GARELA CLUSTER
 
+echo ~~START GARELA CLUSTER~~
 # start galera cluster
 galera_new_cluster
 # enable Mariadb
@@ -235,6 +245,8 @@ mysql --user=root <<_EOF_
   DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
   FLUSH PRIVILEGES;
 _EOF_
+
+echo ~~START GARELA CLUSTER~~
 
 #########################################################################################
 # SECTION 5: CONFIG pacemaker corosync
@@ -298,6 +310,6 @@ pcs constraint
 # SECTION 6: FINISHED
 #Save info
 cat >> "/root/info.txt" <<END
-password_root_database: ${db_root_password}
+SETUP COMPLETE
 END
 chmod 600 /root/info.txt
