@@ -27,7 +27,7 @@
 - Cloud
 - On-primies
 
-## REF:
+## Ref:
 - https://blog.cloud365.vn/linux/pacemaker-haproxy-galera/
 
 
